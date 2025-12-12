@@ -6,7 +6,6 @@ from OpenGL.GLU import *
 from PIL import Image
 import numpy as np
 
-# --- 1. Configuración Inicial ---
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -90,20 +89,18 @@ def draw_cube(center_x, center_y, center_z, size, color=None, texture_id=None):
         elif texture_id:
             current_tex_id = texture_id
 
-        # Configuración de Textura/Color (FUERA DE GL_QUADS)
-        # La lógica de textura ya no es necesaria si solo usamos color, pero se mantiene
-        # para compatibilidad si se activa GL_TEXTURE_2D en main.
+      
         if current_tex_id:
             glBindTexture(GL_TEXTURE_2D, current_tex_id)
             glColor3f(1.0, 1.0, 1.0)
             use_texture = True
         else:
-            # Desenlazar textura para forzar color sólido
+           
             glBindTexture(GL_TEXTURE_2D, 0)
             glColor3fv(base_color)
             use_texture = False
 
-        # Dibujar la cara (INICIO DE GL_QUADS)
+        
         glBegin(GL_QUADS)
         glNormal3fv(normals[i])
 
@@ -115,16 +112,13 @@ def draw_cube(center_x, center_y, center_z, size, color=None, texture_id=None):
 
 
 def draw_tulip_model():
-    # Las texturas ya no se usan, solo se definen para mantener la estructura.
-    # Se eliminan las referencias a TEXTURES.get() y floor_textures ya que no son necesarias.
+    
 
     s = 0.5
 
-    # --- 1. Suelo: COLOR CAFÉ SÓLIDO ---
-    # NO se pasa textura (None) para usar COLOR_CAFE
+    
     draw_cube(0, -s * 0.5, 0, 2.0, COLOR_CAFE, None)
 
-    # --- 2. Tallo y Hojas: COLOR VERDE SÓLIDO ---
     stem_blocks = [
         (0, s * 0.5, 0), (0, s * 1.5, 0), (0, s * 2.5, 0), (0, s * 3.5, 0),
         (-s, s * 1.5, 0), (s, s * 1.5, 0), (0, s * 2.5, -s), (0, s * 2.5, s),
@@ -132,7 +126,7 @@ def draw_tulip_model():
     for x, y, z in stem_blocks:
         draw_cube(x, y, z, s, COLOR_VERDE, None)
 
-    # --- 3. Flor (Pétalos): COLOR ROJO SÓLIDO ---
+    
     flower_center_y = s * 4.5
 
     flower_parts = [
@@ -144,7 +138,7 @@ def draw_tulip_model():
     for x, y, z in flower_parts:
         draw_cube(x, y, z, s, COLOR_ROJO, None)
 
-    # --- 4. Centro negro: COLOR NEGRO SÓLIDO ---
+    
     black_centers = [
         (s * 0.5, flower_center_y + s * 0.5, 0), (-s * 0.5, flower_center_y + s * 0.5, 0),
         (0, flower_center_y + s * 0.5, s * 0.5), (0, flower_center_y + s * 0.5, -s * 0.5),
@@ -182,7 +176,7 @@ def init_opengl():
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
 
-    # Iluminación de alto contraste (para colores fuertes)
+    
     light_ambient = [0.1, 0.1, 0.1, 1.0]
     light_diffuse = [1.0, 1.0, 1.0, 1.0]
     light_specular = [1.0, 1.0, 1.0, 1.0]
@@ -227,11 +221,10 @@ def main():
 
     init_opengl()
 
-    # Aunque ya no usamos texturas, mantenemos la activación y carga para
-    # no alterar la compatibilidad con tu entorno.
+   
     glEnable(GL_TEXTURE_2D)
 
-    # Las texturas se cargan, pero ya no se usan en draw_tulip_model.
+    
     TEXTURES['grass_top'] = load_texture("grass_top.png")
     TEXTURES['red_wool'] = load_texture("red_wool.png")
     TEXTURES['leaves'] = load_texture("leaves.png")

@@ -6,8 +6,8 @@ from OpenGL.GLU import *
 from PIL import Image
 import numpy as np
 
-# --- 1. Configuración Inicial ---
-# ... (variables globales sin cambios)
+
+
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
@@ -33,16 +33,15 @@ def load_texture(filename):
         if img.mode != 'RGB':
             img = img.convert('RGB')
 
-        # --- Carga basada en numpy (más compatible con GL_NEAREST) ---
+       
         img_data = np.array(list(img.getdata()), np.uint8)
         img_data = img_data.reshape(img.size[1], img.size[0], 3)
         img_data = np.flipud(img_data)
-        # -----------------------------------------------------------
+       
 
         texture_id = glGenTextures(1)
         glBindTexture(GL_TEXTURE_2D, texture_id)
 
-        # Configuración para que la textura se pueda repetir
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)  # Filtro Pixelado
@@ -85,7 +84,7 @@ def draw_cube(center_x, center_y, center_z, size, color=None, texture_id=None, t
         (0.0, 1.0, 0.0), (1.0, 0.0, 0.0), (-1.0, 0.0, 0.0)
     ]
 
-    # Coordenadas de textura escaladas para repetición (depende del parámetro)
+    
     scaled_tex_coords = [
         (0, 0),
         (texture_repeat, 0),
@@ -103,7 +102,7 @@ def draw_cube(center_x, center_y, center_z, size, color=None, texture_id=None, t
         elif texture_id:
             current_tex_id = texture_id
 
-        # Configuración de Textura/Color
+       
         if current_tex_id:
             glBindTexture(GL_TEXTURE_2D, current_tex_id)
             glColor3f(1.0, 1.0, 1.0)
@@ -113,7 +112,6 @@ def draw_cube(center_x, center_y, center_z, size, color=None, texture_id=None, t
             glColor3fv(base_color)
             use_texture = False
 
-        # Dibujar la cara (INICIO DE GL_QUADS)
         glBegin(GL_QUADS)
         glNormal3fv(normals[i])
 
@@ -130,22 +128,20 @@ def draw_tulip_model():
     tex_grass_top = TEXTURES.get('grass_top')
     tex_dirt = TEXTURES.get('dirt')  # <--- Nueva textura
 
-    # --- CAMBIO CLAVE: Usar tex_dirt para el default (lados y base) del suelo ---
     floor_textures = {
         3: tex_grass_top,
         'default': tex_dirt  # Ahora usa la textura de tierra
     }
-    # --------------------------------------------------------------------------
+  
 
     s = 0.5
 
-    # Factor de repetición para el suelo (2.0 / 0.5 = 4)
+
     soil_repeat_factor = 4
 
-    # --- 1. Suelo: REPETICIÓN DE TEXTURA 4 (Tapa=Pasto, Lados=Tierra) ---
     draw_cube(0, -s * 0.5, 0, 2.0, COLOR_CAFE, floor_textures, texture_repeat=soil_repeat_factor)
 
-    # --- 2. Tallo y Hojas: Repetición 1 (por defecto) ---
+    
     stem_blocks = [
         (0, s * 0.5, 0), (0, s * 1.5, 0), (0, s * 2.5, 0), (0, s * 3.5, 0),
         (-s, s * 1.5, 0), (s, s * 1.5, 0), (0, s * 2.5, -s), (0, s * 2.5, s),
@@ -153,7 +149,7 @@ def draw_tulip_model():
     for x, y, z in stem_blocks:
         draw_cube(x, y, z, s, COLOR_VERDE, tex_leaves, texture_repeat=1)
 
-    # --- 3. Flor (Pétalos): Repetición 1 (por defecto) ---
+    
     flower_center_y = s * 4.5
 
     flower_parts = [
@@ -165,7 +161,7 @@ def draw_tulip_model():
     for x, y, z in flower_parts:
         draw_cube(x, y, z, s, COLOR_ROJO, tex_wool, texture_repeat=1)
 
-    # --- 4. Centro negro: Color Sólido (Repetición 1 por defecto) ---
+
     black_centers = [
         (s * 0.5, flower_center_y + s * 0.5, 0), (-s * 0.5, flower_center_y + s * 0.5, 0),
         (0, flower_center_y + s * 0.5, s * 0.5), (0, flower_center_y + s * 0.5, -s * 0.5),
@@ -174,7 +170,7 @@ def draw_tulip_model():
         draw_cube(x, y, z, s * 0.5, COLOR_NEGRO, None, texture_repeat=1)
 
 
-# ... (draw_shadow, init_opengl, display - sin cambios)
+
 
 def draw_shadow():
     glDisable(GL_LIGHTING)
@@ -205,7 +201,7 @@ def init_opengl():
     glEnable(GL_LIGHTING)
     glEnable(GL_LIGHT0)
 
-    # Iluminación de alto contraste
+   
     light_ambient = [0.1, 0.1, 0.1, 1.0]
     light_diffuse = [1.0, 1.0, 1.0, 1.0]
     light_specular = [1.0, 1.0, 1.0, 1.0]
@@ -252,11 +248,11 @@ def main():
 
     glEnable(GL_TEXTURE_2D)
 
-    # Carga de Texturas (He ajustado las claves a las que usaste en la última versión)
+  
     TEXTURES['grass_top'] = load_texture("grass_top.png")
     TEXTURES['red_wool'] = load_texture("red-wool.png")
     TEXTURES['leaves'] = load_texture("oak-leaves.png")
-    TEXTURES['dirt'] = load_texture("dirt.png")  # <--- Carga de la nueva textura
+    TEXTURES['dirt'] = load_texture("dirt.png") 
 
     if not all(TEXTURES.values()):
         print("ADVERTENCIA: Alguna textura no se cargó. Usando color sólido para el resto.")

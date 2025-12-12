@@ -332,9 +332,8 @@ def update_bee_movement():
 
 
     elif bee_state == BeeState.REGRESANDO:
-        # Se dirige de vuelta al punto de inicio de la órbita CIRCULANDO (Z=BEE_RADIUS, X=0)
+       
 
-        # Establecemos el objetivo de radio y altura del estado CIRCULANDO
         target_radius = 2.5
         target_y = BEE_Y_HEIGHT
 
@@ -344,7 +343,7 @@ def update_bee_movement():
         # 2. Ajuste de Altura
         bee_y += (target_y - bee_y) * 0.1
 
-        # 3. Movimiento Angular: Continuar la rotación para alinearse
+        # 3. Movimiento Angular
         bee_angle += BEE_SPEED * (0.5 + 0.5 * (1.0 - abs(target_radius - BEE_RADIUS) / target_radius))
 
         angle_rad = np.radians(bee_angle)
@@ -353,7 +352,7 @@ def update_bee_movement():
 
         # Transición a CIRCULANDO
         if abs(BEE_RADIUS - target_radius) < 0.05 and abs(bee_y - target_y) < 0.05:
-            bee_angle = 0.0  # Reiniciamos ángulo al inicio de la órbita
+            bee_angle = 0.0 
             bee_state = BeeState.CIRCULANDO
             BEE_RADIUS = target_radius
             bee_y = target_y
@@ -379,17 +378,14 @@ def display():
     glTranslatef(bee_x, bee_y, bee_z)
 
     rotation_angle = 0.0
-    pitch_angle = 0.0  # Inclinación (para dar sensación de subida/bajada)
-
+    pitch_angle = 0.0  # Inclinación 
     if bee_state == BeeState.CIRCULANDO:
         rotation_angle = bee_angle + 90.0
     elif bee_state == BeeState.APROXIMANDOSE:
-        # La rotación sigue el ángulo de órbita
+        
         rotation_angle = bee_angle + 90.0
 
-        # Aplicamos inclinación basada en la altura (para que parezca que sube/baja)
-        # Esto es una aproximación visual de la inclinación del vector de velocidad.
-        # Calculamos la posición en la trayectoria (0 a 1)
+        
         path_progress = survol_steps / MAX_SURVOL_STEPS
 
         if path_progress < 0.5:  # Fase de subida y acercamiento
